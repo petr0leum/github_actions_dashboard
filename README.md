@@ -19,7 +19,7 @@ This project uses GitHub Actions to automatically fetch stock data daily, perfor
 
 To run this project locally or contribute, you will need:
 
-- **Python 3.8+**: For data fetching and analysis scripts.
+- **Python 3.10**: For data fetching and analysis scripts.
 - **Git**: For version control.
 - **GitHub Account**: To clone the repository and use GitHub Actions.
 - **Basic Knowledge of HTML/CSS/JavaScript**: To understand and modify the web interface.
