@@ -1,0 +1,39 @@
+name: Stock Analysis
+
+on:
+  schedule:
+    - cron: '0 1 * * *'  # Runs daily at 1 AM UTC
+  workflow_dispatch:  # Allows manual triggering
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Fetch Stock Data
+        run: python scripts/fetch_data.py
+
+      - name: Analyze Stock Data
+        run: python scripts/analyze_data.py
+
+      - name: Commit Results and Publish
+        run: |
+          git config --local user.email github-actions@github.com
+          git config --local user.name petr0leum
+          git add data/*.json
+          git add index.html scripts.js styles.css
+          git commit -m "Update stock analysis results and web page"
+          git push
