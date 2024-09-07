@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Stock Analysis Dashboard</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Optional: Add custom styles -->
+</head>
+<body>
+    <h1>Stock Analysis Dashboard</h1>
+    <div id="stock-selector">
+        <label for="stock">Choose a stock:</label>
+        <select id="stock" onchange="fetchStockData()">
+            <option value="AAPL">Apple (AAPL)</option>
+            <option value="GOOGL">Google (GOOGL)</option>
+            <option value="TSLA">Tesla (TSLA)</option>
+        </select>
+    </div>
+    <div id="stock-data">
+        <!-- Stock data will be dynamically loaded here -->
+    </div>
+    <script src="scripts.js"></script>
+</body>
+</html>
