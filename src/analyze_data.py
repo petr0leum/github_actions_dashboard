@@ -17,4 +17,6 @@ def analyze_stock_data(ticker):
     print(f"Analysis complete for {ticker}")
 
 if __name__ == "__main__":
-    analyze_stock_data("AAPL") # Example
+    stocks = ["AAPL", "GOOGL", "TSLA"]
+    for stock in stocks:
+        analyze_stock_data(stock)
