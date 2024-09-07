@@ -24,10 +24,10 @@ jobs:
           pip install -r requirements.txt
 
       - name: Fetch Stock Data
-        run: python scripts/fetch_data.py
+        run: python src/fetch_data.py
 
       - name: Analyze Stock Data
-        run: python scripts/analyze_data.py
+        run: python src/analyze_data.py
 
       - name: Commit Results and Publish
         run: |
