@@ -4,14 +4,18 @@ from datetime import datetime, timedelta
 
 def fetch_stock_data(ticker):
     stock = yf.Ticker(ticker)
-    data = stock.history(period="2d", interval="1h")
-    
-    # Filter the data to keep only the last 24 hours
-    last_24_hours = datetime.now() - timedelta(hours=24)
-    data = data[data.index >= last_24_hours]
+    try:
+        data = stock.history(period="1d", interval="1h")
 
-    data.to_csv(f'data/{ticker}_data.csv')
-    print(f"Fetched data for {ticker}")
+        if data.empty:
+            print(f"No data available for the last 24 hours for {ticker}.")
+            return
+
+        data.to_csv(f'data/{ticker}_data.csv')
+        print(f"Fetched data for {ticker}")
+
+    except Exception as e:
+        print(f"Error fetching data for {ticker}: {e}")
 
 if __name__ == "__main__":
     stocks = ["AAPL", "GOOGL", "TSLA"]
