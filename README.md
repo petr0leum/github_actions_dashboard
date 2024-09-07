@@ -13,6 +13,20 @@ This project uses GitHub Actions to automatically fetch stock data daily, perfor
 - **Interactive Web Dashboard**: Displays the latest stock data and visualizations, allowing users to select different stocks and view historical data.
 - **Continuous Integration/Continuous Deployment (CI/CD)**: Uses GitHub Actions to automate the entire workflow, from fetching data to publishing the web page.
 
+## 📊 Usage
+
+### Accessing the Dashboard
+
+The dashboard is automatically deployed using GitHub Pages. You can access it at:
+
+[https://petr0leum.github.io/github_actions_dashboard/](https://petr0leum.github.io/github_actions_dashboard/)
+
+### Interacting with the Dashboard
+
+- **Select a Stock**: Use the dropdown menu to select different stocks.
+- **View Analysis**: The page displays the latest data and analysis for the selected stock.
+- **Run Custom Analysis**: Modify the scripts and push changes to see them reflected automatically on the dashboard.
+
 ## 🛠️ Getting Started
 
 ### Prerequisites
@@ -23,20 +37,6 @@ To run this project locally or contribute, you will need:
 - **Git**: For version control.
 - **GitHub Account**: To clone the repository and use GitHub Actions.
 - **Basic Knowledge of HTML/CSS/JavaScript**: To understand and modify the web interface.
-
-## 📊 Usage
-
-### Accessing the Dashboard
-
-The dashboard is automatically deployed using GitHub Pages. You can access it at:
-
-[https://<your-username>.github.io/stock-insights-dashboard/](https://<your-username>.github.io/stock-insights-dashboard/)
-
-### Interacting with the Dashboard
-
-- **Select a Stock**: Use the dropdown menu to select different stocks.
-- **View Analysis**: The page displays the latest data and analysis for the selected stock.
-- **Run Custom Analysis**: Modify the scripts and push changes to see them reflected automatically on the dashboard.
 
 ## 🤖 How GitHub Actions Works
 
