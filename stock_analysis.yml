@@ -31,8 +31,8 @@ jobs:
 
       - name: Commit Results and Publish
         run: |
-          git config --local user.email "actions@github.com"
-          git config --local user.name "GitHub Actions"
+          git config --local user.email github-actions@github.com
+          git config --local user.name petr0leum
           git add data/*.json
           git add index.html scripts.js styles.css
           git commit -m "Update stock analysis results and web page"
