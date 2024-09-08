@@ -27,6 +27,37 @@ def analyze_stock_data(ticker):
     rs = gain / loss
     data['RSI'] = 100 - (100 / (1 + rs))
 
+    # Implement a simple moving average crossover strategy
+    data['Signal'] = 0  # Initialize the signal column
+    data.loc[data['MA_5'] > data['MA_30'], 'Signal'] = 1  # Buy signal
+    data.loc[data['MA_5'] < data['MA_30'], 'Signal'] = -1  # Sell signal
+
+    # Track performance
+    data['Position'] = data['Signal'].shift()
+    data['Returns'] = data['Close'].pct_change()
+    data['Strategy'] = data['Returns'] * data['Position']
+
+    # Calculate cumulative returns
+    data['Cumulative Returns'] = (1 + data['Strategy']).cumprod()
+
+    # Track deals (buy/sell actions)
+    deals = []
+    for i in range(1, len(data)):
+        if data['Signal'].iloc[i] != 0 and data['Signal'].iloc[i] != data['Signal'].iloc[i - 1]:
+            deal = {
+                "date": data.index[i].strftime('%Y-%m-%d %H:%M:%S'),
+                "action": "Buy" if data['Signal'].iloc[i] == 1 else "Sell",
+                "price": data['Close'].iloc[i]
+            }
+            deals.append(deal)
+
+    # Calculate deal statistics
+    total_trades = len(deals)
+    profitable_trades = sum(1 for deal in deals if deal['action'] == 'Sell' and deal['price'] > 0)
+    win_rate = profitable_trades / total_trades if total_trades > 0 else 0
+    cumulative_return = data['Cumulative Returns'].iloc[-1] if not data['Cumulative Returns'].empty else 1
+
+    # Save analysis results to JSON
     result = {
         "ticker": ticker,
         "latest_close": data['Close'].iloc[-1],
@@ -35,7 +66,13 @@ def analyze_stock_data(ticker):
         "MA_5": data['MA_5'].replace({np.nan: None}).tolist(),
         "MA_30": data['MA_30'].replace({np.nan: None}).tolist(),
         "MA_60": data['MA_60'].replace({np.nan: None}).tolist(),
-        "RSI": data['RSI'].replace({np.nan: None}).tolist()
+        "RSI": data['RSI'].replace({np.nan: None}).tolist(),
+        "Signals": data['Signal'].tolist(),
+        "CumulativeReturns": data['Cumulative Returns'].tolist(),
+        "Deals": deals,
+        "TotalTrades": total_trades,
+        "WinRate": win_rate,
+        "CumulativeReturn": cumulative_return
     }
 
     with open(f'data/{ticker}_data.json', 'w') as f:
@@ -48,6 +85,6 @@ def analyze_stock_data(ticker):
     print(f"Analysis complete for {ticker}")
 
 if __name__ == "__main__":
-    stocks = ["AAPL", "GOOGL", "TSLA"]
+    stocks = ["AAPL", "GOOGL", "TSLA"] # List of stock tickers to analyze
     for stock in stocks:
         analyze_stock_data(stock)

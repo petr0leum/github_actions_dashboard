@@ -29,7 +29,9 @@ function displayStockData(data) {
     stockDataDiv.innerHTML = `
         <h2>${data.ticker} Stock Data</h2>
         <p>Latest Close Price: ${data.latest_close}</p>
-        <!-- Placeholder for graph -->
+        <p>Total Trades: ${data.TotalTrades}</p>
+        <p>Win Rate: ${(data.WinRate * 100).toFixed(2)}%</p>
+        <p>Cumulative Return: ${(data.CumulativeReturn * 100).toFixed(2)}%</p>
         <canvas id="stock-chart" width="600" height="400"></canvas>
     `;
 
@@ -46,6 +48,30 @@ function createGraph(data) {
     const ma5 = data.MA_5;
     const ma30 = data.MA_30;
 
+    // Create arrays to hold trade markers
+    const buySignals = [];
+    const sellSignals = [];
+    const holdingPeriods = [];
+
+    // Populate trade markers and holding periods based on signals
+    let holdingStart = null;
+    data.Signals.forEach((signal, index) => {
+        if (signal === 1) {
+            buySignals.push({ x: labels[index], y: prices[index] });
+            holdingStart = index;
+        } else if (signal === -1 && holdingStart !== null) {
+            sellSignals.push({ x: labels[index], y: prices[index] });
+
+            holdingPeriods.push({
+                start: holdingStart,
+                end: index,
+                data: prices.slice(holdingStart, index + 1)
+            });
+            holdingStart = null;
+        }
+    });
+
+    // Create a new chart
     const chart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -70,12 +96,29 @@ function createGraph(data) {
                     borderColor: 'rgba(75, 75, 192, 1)',
                     borderWidth: 2,
                     borderDash: [5, 5]
+                },
+                {
+                    label: 'Buy Signal',
+                    data: buySignals,
+                    pointStyle: 'triangle',
+                    pointBackgroundColor: 'green',
+                    showLine: false,
+                    pointRadius: 6
+                },
+                {
+                    label: 'Sell Signal',
+                    data: sellSignals,
+                    pointStyle: 'triangle',
+                    pointBackgroundColor: 'red',
+                    showLine: false,
+                    pointRadius: 6,
+                    rotation: 180
                 }
             ]
         },
         options: {
-            responsive: true, // Enable responsive resizing
-            maintainAspectRatio: false, // Allow chart to resize dynamically
+            responsive: true,
+            maintainAspectRatio: false,
             scales: {
                 x: {
                     title: { display: true, text: 'Date/Time' },
@@ -87,6 +130,23 @@ function createGraph(data) {
                 },
                 y: {
                     title: { display: true, text: 'Price' }
+                }
+            },
+            plugins: {
+                annotation: {
+                    annotations: holdingPeriods.map((period, i) => ({
+                        type: 'box',
+                        xMin: period.start,
+                        xMax: period.end,
+                        backgroundColor: 'rgba(0, 255, 0, 0.1)',
+                        borderColor: 'rgba(0, 255, 0, 0.3)',
+                        borderWidth: 1,
+                        label: {
+                            content: `Holding ${i + 1}`,
+                            enabled: true,
+                            position: 'start'
+                        }
+                    }))
                 }
             }
         }
