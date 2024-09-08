@@ -1,8 +1,10 @@
+import os
 import json
 import pandas as pd
 
 def analyze_stock_data(ticker):
-    data = pd.read_csv(f'data/{ticker}_data.csv', index_col=0, parse_dates=True)
+    file_name = f'data/{ticker}_data.csv'
+    data = pd.read_csv(file_name, index_col=0, parse_dates=True)
 
     if data.empty:
         print(f"No data available for {ticker}. Skipping analysis.")
@@ -44,6 +46,10 @@ def analyze_stock_data(ticker):
         json.dump(result, f)
 
     print(f"Analysis complete for {ticker}")
+
+    if(os.path.exists(file_name) and os.path.isfile(file_name)): 
+        os.remove(file) 
+        print(f"{file_name} deleted") 
 
 if __name__ == "__main__":
     stocks = ["AAPL", "GOOGL", "TSLA"]
