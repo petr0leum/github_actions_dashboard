@@ -46,6 +46,7 @@ function createGraph(data) {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             scales: {
                 x: { title: { display: true, text: 'Date/Time' }},
                 y: { title: { display: true, text: 'Price' }}
