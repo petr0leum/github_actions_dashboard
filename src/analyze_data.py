@@ -31,10 +31,10 @@ def analyze_stock_data(ticker):
         "latest_close": data['Close'].iloc[-1],
         "timestamps": data.index.strftime('%Y-%m-%d %H:%M:%S').tolist(),
         "prices": data['Close'].tolist(),
-        "MA_5": data['MA_5'].where(pd.notna(data['MA_5']), None).tolist(),
-        "MA_30": data['MA_30'].where(pd.notna(data['MA_30']), None).tolist(),
-        "MA_60": data['MA_60'].where(pd.notna(data['MA_60']), None).tolist(),
-        "RSI": data['RSI'].where(pd.notna(data['RSI']), None).tolist()
+        "MA_5": data['MA_5'].replace({np.nan: None}).tolist(),
+        "MA_30": data['MA_30'].replace({np.nan: None}).tolist(),
+        "MA_60": data['MA_60'].replace({np.nan: None}).tolist(),
+        "RSI": data['RSI'].replace({np.nan: None}).tolist()
     }
 
     with open(f'data/{ticker}_data.json', 'w') as f:
