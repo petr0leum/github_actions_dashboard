@@ -1,4 +1,4 @@
-# 📈 Automated Stock Insights Dashboard
+# 📈 Automated Stock Insights [Dashboard]((https://petr0leum.github.io/github_actions_dashboard/))
 
 An interactive web dashboard that automates daily stock data fetching, analysis, and visualization using GitHub Actions. 
 
