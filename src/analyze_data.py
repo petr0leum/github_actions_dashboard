@@ -1,5 +1,6 @@
 import os
 import json
+import numpy as np
 import pandas as pd
 
 def analyze_stock_data(ticker):
