@@ -45,21 +45,21 @@ function createGraph(data) {
                     data: prices,
                     borderColor: 'rgba(75, 192, 192, 1)',
                     borderWidth: 2
-                },
-                {
-                    label: '5-Period Moving Average',
-                    data: ma5,
-                    borderColor: 'rgba(192, 75, 75, 1)',
-                    borderWidth: 2,
-                    borderDash: [5, 5]
-                },
-                {
-                    label: '30-Period Moving Average',
-                    data: ma30,
-                    borderColor: 'rgba(75, 75, 192, 1)',
-                    borderWidth: 2,
-                    borderDash: [5, 5]
                 }
+                // ,{
+                //     label: '5-Period Moving Average',
+                //     data: ma5,
+                //     borderColor: 'rgba(192, 75, 75, 1)',
+                //     borderWidth: 2,
+                //     borderDash: [5, 5]
+                // },
+                // {
+                //     label: '30-Period Moving Average',
+                //     data: ma30,
+                //     borderColor: 'rgba(75, 75, 192, 1)',
+                //     borderWidth: 2,
+                //     borderDash: [5, 5]
+                // }
             ]
         },
         options: {
