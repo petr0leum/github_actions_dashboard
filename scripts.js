@@ -12,7 +12,6 @@ async function fetchStockData() {
         }
 
         const data = await response.json();
-        console.log("Fetched data successfully:", data); // Debugging
         displayStockData(data);
     } catch (error) {
         console.error("Error fetching stock data:", error);
@@ -31,7 +30,7 @@ function displayStockData(data) {
     stockDataDiv.innerHTML = `
         <h2>${data.ticker} Stock Data</h2>
         <p>Latest Close Price: ${data.latest_close}</p>
-        <canvas id="stock-chart"></canvas>
+        <canvas id="stock-chart" width="600" height="400"></canvas>
     `;
 
     createGraph(data);
@@ -73,8 +72,8 @@ function createGraph(data) {
             ]
         },
         options: {
-            responsive: true,
-            maintainAspectRatio: false,
+            responsive: false, // Disable responsive resizing
+            maintainAspectRatio: false, // Do not maintain aspect ratio
             scales: {
                 x: {
                     title: { display: true, text: 'Date/Time' },
