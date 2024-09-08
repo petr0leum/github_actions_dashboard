@@ -45,11 +45,11 @@ def analyze_stock_data(ticker):
     with open(f'data/{ticker}_data.json', 'w') as f:
         json.dump(result, f)
 
-    print(f"Analysis complete for {ticker}")
-
     if(os.path.exists(file_name) and os.path.isfile(file_name)): 
-        os.remove(file) 
+        os.remove(file_name)
         print(f"{file_name} deleted") 
+
+    print(f"Analysis complete for {ticker}")
 
 if __name__ == "__main__":
     stocks = ["AAPL", "GOOGL", "TSLA"]
