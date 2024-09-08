@@ -26,20 +26,15 @@ def analyze_stock_data(ticker):
     rs = gain / loss
     data['RSI'] = 100 - (100 / (1 + rs))
 
-    # data['MA_5'].fillna(value=None, inplace=True)
-    # data['MA_30'].fillna(value=None, inplace=True)
-    # data['MA_60'].fillna(value=None, inplace=True)
-    # data['RSI'].fillna(value=None, inplace=True)
-
     result = {
         "ticker": ticker,
         "latest_close": data['Close'].iloc[-1],
         "timestamps": data.index.strftime('%Y-%m-%d %H:%M:%S').tolist(),
         "prices": data['Close'].tolist(),
-        "MA_5": data['MA_5'].tolist(),
-        "MA_30": data['MA_30'].tolist(),
-        "MA_60": data['MA_60'].tolist(),
-        "RSI": data['RSI'].tolist()
+        "MA_5": data['MA_5'].where(pd.notna(data['MA_5']), None).tolist(),
+        "MA_30": data['MA_30'].where(pd.notna(data['MA_30']), None).tolist(),
+        "MA_60": data['MA_60'].where(pd.notna(data['MA_60']), None).tolist(),
+        "RSI": data['RSI'].where(pd.notna(data['RSI']), None).tolist()
     }
 
     with open(f'data/{ticker}_data.json', 'w') as f:
