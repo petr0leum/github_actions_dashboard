@@ -9,18 +9,22 @@ body {
     margin-bottom: 20px;
 }
 
-#stock-chart {
-    display: block;
-    margin: 0 auto;
-    max-width: 1000px;
-    max-height: 600px;
-}
-
 #stock-data {
     background: white;
     padding: 20px;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    max-width: 650px;
+    max-width: 90%;
+    width: 100%;
     margin: 20px auto;
+    text-align: center;
+}
+
+#stock-chart {
+    display: block;
+    margin: 0 auto; /* Center the canvas horizontally */
+    width: 90%; /* Full width of its container */
+    height: 60vh; /* Set height relative to the viewport height */
+    max-width: 90%; /* Maximum width of the canvas */
+    max-height: 90vh; /* Maximum height of the canvas */
 }

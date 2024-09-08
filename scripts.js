@@ -1,8 +1,5 @@
 async function fetchStockData() {
     const stock = document.getElementById('stock').value;
-    const stockDataDiv = document.getElementById('stock-data');
-    
-    stockDataDiv.innerHTML = `<p>Loading data for ${stock}...</p>`;
 
     try {
         const response = await fetch(`data/${stock}_data.json`);
@@ -15,27 +12,32 @@ async function fetchStockData() {
         displayStockData(data);
     } catch (error) {
         console.error("Error fetching stock data:", error);
-        stockDataDiv.innerHTML = `<p>Error loading data. Please try again later.</p>`;
+        document.getElementById('stock-data').innerHTML = `<p>Error loading data. Please try again later.</p>`;
     }
 }
 
 function displayStockData(data) {
     const stockDataDiv = document.getElementById('stock-data');
 
+    // Check if data exists
     if (!data || Object.keys(data).length === 0) {
         stockDataDiv.innerHTML = `<p>No data available for this stock.</p>`;
         return;
     }
 
+    // Display the stock data
     stockDataDiv.innerHTML = `
         <h2>${data.ticker} Stock Data</h2>
         <p>Latest Close Price: ${data.latest_close}</p>
+        <!-- Placeholder for graph -->
         <canvas id="stock-chart" width="600" height="400"></canvas>
     `;
 
+    // Call function to create graph with dynamic data
     createGraph(data);
 }
 
+// Function to create graph using Chart.js with dynamic data and moving averages
 function createGraph(data) {
     const ctx = document.getElementById('stock-chart').getContext('2d');
 
@@ -72,8 +74,8 @@ function createGraph(data) {
             ]
         },
         options: {
-            responsive: false, // Disable responsive resizing
-            maintainAspectRatio: false, // Do not maintain aspect ratio
+            responsive: true, // Enable responsive resizing
+            maintainAspectRatio: false, // Allow chart to resize dynamically
             scales: {
                 x: {
                     title: { display: true, text: 'Date/Time' },
