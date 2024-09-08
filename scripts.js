@@ -1,12 +1,21 @@
 async function fetchStockData() {
     const stock = document.getElementById('stock').value;
+    const stockDataDiv = document.getElementById('stock-data');
+    
+    stockDataDiv.innerHTML = `<p>Loading data for ${stock}...</p>`;
+
     try {
-        const response = await fetch(`data/${stock}_data.json`); // Ensure the path is correct
+        const response = await fetch(`data/${stock}_data.json`);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const data = await response.json();
         displayStockData(data);
     } catch (error) {
         console.error("Error fetching stock data:", error);
-        document.getElementById('stock-data').innerHTML = `<p>Error loading data. Please try again later.</p>`;
+        stockDataDiv.innerHTML = `<p>Error loading data. Please try again later.</p>`;
     }
 }
 
@@ -45,29 +54,38 @@ function createGraph(data) {
                     data: prices,
                     borderColor: 'rgba(75, 192, 192, 1)',
                     borderWidth: 2
+                },
+                {
+                    label: '5-Period Moving Average',
+                    data: ma5,
+                    borderColor: 'rgba(192, 75, 75, 1)',
+                    borderWidth: 2,
+                    borderDash: [5, 5]
+                },
+                {
+                    label: '30-Period Moving Average',
+                    data: ma30,
+                    borderColor: 'rgba(75, 75, 192, 1)',
+                    borderWidth: 2,
+                    borderDash: [5, 5]
                 }
-                // ,{
-                //     label: '5-Period Moving Average',
-                //     data: ma5,
-                //     borderColor: 'rgba(192, 75, 75, 1)',
-                //     borderWidth: 2,
-                //     borderDash: [5, 5]
-                // },
-                // {
-                //     label: '30-Period Moving Average',
-                //     data: ma30,
-                //     borderColor: 'rgba(75, 75, 192, 1)',
-                //     borderWidth: 2,
-                //     borderDash: [5, 5]
-                // }
             ]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             scales: {
-                x: { title: { display: true, text: 'Date/Time' }},
-                y: { title: { display: true, text: 'Price' }}
+                x: {
+                    title: { display: true, text: 'Date/Time' },
+                    ticks: {
+                        maxTicksLimit: 10,
+                        maxRotation: 0,
+                        autoSkip: true
+                    }
+                },
+                y: {
+                    title: { display: true, text: 'Price' }
+                }
             }
         }
     });
