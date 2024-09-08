@@ -5,10 +5,10 @@ from datetime import datetime, timedelta
 def fetch_stock_data(ticker):
     stock = yf.Ticker(ticker)
     try:
-        data = stock.history(period="1d", interval="1h")
+        data = stock.history(period="1mo", interval="30m")
 
         if data.empty:
-            print(f"No data available for the last 24 hours for {ticker}.")
+            print(f"No data available for the last month for {ticker}.")
             return
 
         data.to_csv(f'data/{ticker}_data.csv')

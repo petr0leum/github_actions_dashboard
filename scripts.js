@@ -32,17 +32,35 @@ function createGraph(data) {
 
     const labels = data.timestamps;
     const prices = data.prices;
+    const ma5 = data.MA_5;
+    const ma30 = data.MA_30;
 
     const chart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: labels,
-            datasets: [{
-                label: `${data.ticker} Price`,
-                data: prices,
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 2
-            }]
+            datasets: [
+                {
+                    label: `${data.ticker} Price`,
+                    data: prices,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 2
+                },
+                {
+                    label: '5-Period Moving Average',
+                    data: ma5,
+                    borderColor: 'rgba(192, 75, 75, 1)',
+                    borderWidth: 2,
+                    borderDash: [5, 5]
+                },
+                {
+                    label: '30-Period Moving Average',
+                    data: ma30,
+                    borderColor: 'rgba(75, 75, 192, 1)',
+                    borderWidth: 2,
+                    borderDash: [5, 5]
+                }
+            ]
         },
         options: {
             responsive: true,
