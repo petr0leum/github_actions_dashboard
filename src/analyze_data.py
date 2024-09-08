@@ -24,6 +24,11 @@ def analyze_stock_data(ticker):
     rs = gain / loss
     data['RSI'] = 100 - (100 / (1 + rs))
 
+    data['MA_5'].fillna(value=None, inplace=True)
+    data['MA_30'].fillna(value=None, inplace=True)
+    data['MA_60'].fillna(value=None, inplace=True)
+    data['RSI'].fillna(value=None, inplace=True)
+
     result = {
         "ticker": ticker,
         "latest_close": data['Close'].iloc[-1],
