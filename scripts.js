@@ -108,7 +108,7 @@ function createGraph(data) {
                     pointStyle: 'triangle',
                     pointBackgroundColor: 'green',
                     showLine: false,
-                    pointRadius: 8
+                    pointRadius: 3
                 },
                 {
                     label: 'Sell Signal',
@@ -116,7 +116,7 @@ function createGraph(data) {
                     pointStyle: 'triangle',
                     pointBackgroundColor: 'red',
                     showLine: false,
-                    pointRadius: 8,
+                    pointRadius: 3,
                     rotation: 180
                 }
             ]
