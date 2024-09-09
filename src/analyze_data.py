@@ -58,19 +58,19 @@ def analyze_stock_data(ticker):
     cumulative_return = data['Cumulative Returns'].iloc[-1] if not data['Cumulative Returns'].empty else 1
 
     data = data.replace({np.nan: None})
-    
+
     # Save analysis results to JSON
     result = {
         "ticker": ticker,
         "latest_close": data['Close'].iloc[-1],
         "timestamps": data.index.strftime('%Y-%m-%d %H:%M:%S').tolist(),
         "prices": data['Close'].tolist(),
-        "MA_5": data['MA_5'].tolist(),
-        "MA_30": data['MA_30'].tolist(),
-        "MA_60": data['MA_60'].tolist(),
-        "RSI": data['RSI'].tolist(),
+        "MA_5": data['MA_5'].replace({np.nan: None}).tolist(),
+        "MA_30": data['MA_30'].replace({np.nan: None}).tolist(),
+        "MA_60": data['MA_60'].replace({np.nan: None}).tolist(),
+        "RSI": data['RSI'].replace({np.nan: None}).tolist(),
         "Signals": data['Signal'].tolist(),
-        "CumulativeReturns": data['Cumulative Returns'].tolist(),
+        "CumulativeReturns": data['Cumulative Returns'].replace({np.nan: None}).tolist(),
         "Deals": deals,
         "TotalTrades": total_trades,
         "WinRate": win_rate,
