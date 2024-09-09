@@ -27,10 +27,24 @@ def analyze_stock_data(ticker):
     rs = gain / loss
     data['RSI'] = 100 - (100 / (1 + rs))
 
-    # Implement a simple moving average crossover strategy
-    data['Signal'] = 0  # Initialize the signal column
-    data.loc[data['MA_5'] > data['MA_30'], 'Signal'] = 1  # Buy signal
-    data.loc[data['MA_5'] < data['MA_30'], 'Signal'] = -1  # Sell signal
+    # Implement a simple moving average crossover strategy with buy/sell constraints
+    data['Signal'] = 0
+    position = 0
+    holding_start = None
+
+    for i in range(1, len(data)):
+        if data['MA_5'].iloc[i] > data['MA_30'].iloc[i] and position == 0:
+            data.at[data.index[i], 'Signal'] = 1
+            position = 1
+            holding_start = data.index[i]
+        elif data['MA_5'].iloc[i] < data['MA_30'].iloc[i] and position == 1:
+            data.at[data.index[i], 'Signal'] = -1
+            position = 0
+            if holding_start is not None:
+                data.at[data.index[i], 'Hold'] = holding_start.strftime('%Y-%m-%d %H:%M:%S')
+                holding_start = None
+        else:
+            data.at[data.index[i], 'Signal'] = 0
 
     # Track performance
     data['Position'] = data['Signal'].shift()
@@ -42,14 +56,26 @@ def analyze_stock_data(ticker):
 
     # Track deals (buy/sell actions)
     deals = []
+    hold_periods = []
     for i in range(1, len(data)):
-        if data['Signal'].iloc[i] != 0 and data['Signal'].iloc[i] != data['Signal'].iloc[i - 1]:
-            deal = {
+        if data['Signal'].iloc[i] == 1:
+            deals.append({
                 "date": data.index[i].strftime('%Y-%m-%d %H:%M:%S'),
-                "action": "Buy" if data['Signal'].iloc[i] == 1 else "Sell",
+                "action": "Buy",
                 "price": data['Close'].iloc[i]
-            }
-            deals.append(deal)
+            })
+        elif data['Signal'].iloc[i] == -1:
+            deals.append({
+                "date": data.index[i].strftime('%Y-%m-%d %H:%M:%S'),
+                "action": "Sell",
+                "price": data['Close'].iloc[i]
+            })
+            if 'Hold' in data.columns and pd.notna(data['Hold'].iloc[i]):
+                hold_periods.append({
+                    "start": data['Hold'].iloc[i],
+                    "end": data.index[i].strftime('%Y-%m-%d %H:%M:%S')
+                })
+
 
     # Calculate deal statistics
     total_trades = len(deals)
@@ -72,6 +98,7 @@ def analyze_stock_data(ticker):
         "Signals": data['Signal'].tolist(),
         "CumulativeReturns": data['Cumulative Returns'].tolist(),
         "Deals": deals,
+        "HoldPeriods": hold_periods,
         "TotalTrades": total_trades,
         "WinRate": win_rate,
         "CumulativeReturn": cumulative_return

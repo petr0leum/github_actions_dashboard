@@ -53,22 +53,29 @@ function createGraph(data) {
     const sellSignals = [];
     const holdingPeriods = [];
 
-    // Populate trade markers and holding periods based on signals
-    let holdingStart = null;
-    data.Signals.forEach((signal, index) => {
-        if (signal === 1) {
-            buySignals.push({ x: labels[index], y: prices[index] });
-            holdingStart = index;
-        } else if (signal === -1 && holdingStart !== null) {
-            sellSignals.push({ x: labels[index], y: prices[index] });
-
-            holdingPeriods.push({
-                start: holdingStart,
-                end: index,
-                data: prices.slice(holdingStart, index + 1)
-            });
-            holdingStart = null;
+    // Populate trade markers and hold periods based on signals
+    data.Deals.forEach(deal => {
+        if (deal.action === 'Buy') {
+            buySignals.push({ x: deal.date, y: deal.price });
+        } else if (deal.action === 'Sell') {
+            sellSignals.push({ x: deal.date, y: deal.price });
         }
+    });
+
+    // Populate hold periods based on JSON data
+    data.HoldPeriods.forEach(period => {
+        holdPeriods.push({
+            xMin: period.start,
+            xMax: period.end,
+            backgroundColor: 'rgba(255, 255, 0, 0.2)', // Light yellow color for hold periods
+            borderColor: 'rgba(255, 165, 0, 0.5)', // Orange border for hold periods
+            borderWidth: 1,
+            label: {
+                display: true,
+                content: 'Holding Period',
+                position: 'start'
+            }
+        });
     });
 
     const chart = new Chart(ctx, {
@@ -108,7 +115,7 @@ function createGraph(data) {
                     pointStyle: 'triangle',
                     pointBackgroundColor: 'green',
                     showLine: false,
-                    pointRadius: 3
+                    pointRadius: 4
                 },
                 {
                     label: 'Sell Signal',
@@ -116,7 +123,7 @@ function createGraph(data) {
                     pointStyle: 'triangle',
                     pointBackgroundColor: 'red',
                     showLine: false,
-                    pointRadius: 3,
+                    pointRadius: 4,
                     rotation: 180
                 }
             ]
@@ -139,19 +146,7 @@ function createGraph(data) {
             },
             plugins: {
                 annotation: {
-                    annotations: holdingPeriods.map((period, i) => ({
-                        type: 'box',
-                        xMin: period.start,
-                        xMax: period.end,
-                        backgroundColor: 'rgba(0, 255, 0, 0.1)',
-                        borderColor: 'rgba(0, 255, 0, 0.3)',
-                        borderWidth: 1,
-                        label: {
-                            content: `Holding ${i + 1}`,
-                            enabled: true,
-                            position: 'start'
-                        }
-                    }))
+                    annotations: holdPeriods
                 }
             }
         }
