@@ -43,6 +43,7 @@ function displayStockData(data) {
 function createGraph(data) {
     const ctx = document.getElementById('stock-chart').getContext('2d');
 
+    // Extract labels (timestamps) and data points (prices and moving averages) dynamically from the JSON data
     const labels = data.timestamps;
     const prices = data.prices;
     const ma5 = data.MA_5;
@@ -53,43 +54,40 @@ function createGraph(data) {
     const sellSignals = [];
     const holdingPeriods = [];
 
-    // Populate trade markers and hold periods based on signals
-    data.Deals.forEach(deal => {
-        if (deal.action === 'Buy') {
-            buySignals.push({ x: deal.date, y: deal.price });
-        } else if (deal.action === 'Sell') {
-            sellSignals.push({ x: deal.date, y: deal.price });
+    // Populate trade markers and holding periods based on signals
+    let holdingStart = null;
+    data.Signals.forEach((signal, index) => {
+        if (signal === 1) {
+            // Buy signal
+            buySignals.push({ x: labels[index], y: prices[index] });
+            holdingStart = index; // Start of holding period
+        } else if (signal === -1 && holdingStart !== null) {
+            // Sell signal
+            sellSignals.push({ x: labels[index], y: prices[index] });
+
+            // Add holding period from the buy signal to the sell signal
+            holdingPeriods.push({
+                start: holdingStart,
+                end: index,
+                data: prices.slice(holdingStart, index + 1)
+            });
+            holdingStart = null; // Reset holding start
         }
     });
 
-    // Populate hold periods based on JSON data
-    data.HoldPeriods.forEach(period => {
-        holdPeriods.push({
-            xMin: period.start,
-            xMax: period.end,
-            backgroundColor: 'rgba(255, 255, 0, 0.2)', // Light yellow color for hold periods
-            borderColor: 'rgba(255, 165, 0, 0.5)', // Orange border for hold periods
-            borderWidth: 1,
-            label: {
-                display: true,
-                content: 'Holding Period',
-                position: 'start'
-            }
-        });
-    });
-
+    // Create a new chart
     const chart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: labels,
+            labels: labels, // Dynamic labels
             datasets: [
                 {
                     label: `${data.ticker} Price`,
-                    data: prices,
+                    data: prices, // Dynamic data points
                     borderColor: 'rgba(75, 192, 192, 1)',
                     borderWidth: 2,
-                    pointRadius: 0,
-                    pointHoverRadius: 0
+                    pointRadius: 0, // Remove points from the price line
+                    pointHoverRadius: 0 // Remove points on hover
                 },
                 {
                     label: '5-Period Moving Average',
@@ -97,8 +95,8 @@ function createGraph(data) {
                     borderColor: 'rgba(192, 75, 75, 1)',
                     borderWidth: 2,
                     borderDash: [5, 5],
-                    pointRadius: 0,
-                    pointHoverRadius: 0
+                    pointRadius: 0, // Remove points from the 5-period moving average
+                    pointHoverRadius: 0 // Remove points on hover
                 },
                 {
                     label: '30-Period Moving Average',
@@ -106,8 +104,8 @@ function createGraph(data) {
                     borderColor: 'rgba(75, 75, 192, 1)',
                     borderWidth: 2,
                     borderDash: [5, 5],
-                    pointRadius: 0,
-                    pointHoverRadius: 0
+                    pointRadius: 0, // Remove points from the 30-period moving average
+                    pointHoverRadius: 0 // Remove points on hover
                 },
                 {
                     label: 'Buy Signal',
@@ -115,7 +113,7 @@ function createGraph(data) {
                     pointStyle: 'triangle',
                     pointBackgroundColor: 'green',
                     showLine: false,
-                    pointRadius: 4
+                    pointRadius: 8 // Keep points for buy signals
                 },
                 {
                     label: 'Sell Signal',
@@ -123,7 +121,7 @@ function createGraph(data) {
                     pointStyle: 'triangle',
                     pointBackgroundColor: 'red',
                     showLine: false,
-                    pointRadius: 4,
+                    pointRadius: 8, // Keep points for sell signals
                     rotation: 180
                 }
             ]
@@ -136,7 +134,7 @@ function createGraph(data) {
                     title: { display: true, text: 'Date/Time' },
                     ticks: {
                         maxTicksLimit: 10,
-                        maxRotation: 30,
+                        maxRotation: 30, // Rotate labels by 30 degrees
                         autoSkip: true
                     }
                 },
@@ -146,7 +144,19 @@ function createGraph(data) {
             },
             plugins: {
                 annotation: {
-                    annotations: holdPeriods
+                    annotations: holdingPeriods.map((period, i) => ({
+                        type: 'box',
+                        xMin: period.start,
+                        xMax: period.end,
+                        backgroundColor: 'rgba(0, 255, 0, 0.1)',
+                        borderColor: 'rgba(0, 255, 0, 0.3)',
+                        borderWidth: 1,
+                        label: {
+                            content: `Holding ${i + 1}`,
+                            enabled: true,
+                            position: 'start'
+                        }
+                    }))
                 }
             }
         }
