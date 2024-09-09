@@ -33,7 +33,10 @@ jobs:
         run: |
           git config --local user.email github-actions@github.com
           git config --local user.name petr0leum
-          git add data/*.json
-          git add index.html scripts.js styles.css
+          git add data/*.json index.html scripts.js styles.css
+          if git diff-index --quiet HEAD; then
+            echo "No changes to commit"
+            exit 0
+          fi
           git commit -m "Update stock analysis results and web page"
           git push
