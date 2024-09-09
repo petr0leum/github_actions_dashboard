@@ -71,7 +71,6 @@ function createGraph(data) {
         }
     });
 
-    // Create a new chart
     const chart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -80,17 +79,28 @@ function createGraph(data) {
                 {
                     label: `${data.ticker} Price`,
                     data: prices,
-                    borderColor: 'rgba(75, 192, 192, 1)'
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    pointHoverRadius: 0
                 },
                 {
                     label: '5-Period Moving Average',
                     data: ma5,
-                    borderColor: 'rgba(192, 75, 75, 1)'
+                    borderColor: 'rgba(192, 75, 75, 1)',
+                    borderWidth: 2,
+                    borderDash: [5, 5],
+                    pointRadius: 0,
+                    pointHoverRadius: 0
                 },
                 {
                     label: '30-Period Moving Average',
                     data: ma30,
-                    borderColor: 'rgba(75, 75, 192, 1)'
+                    borderColor: 'rgba(75, 75, 192, 1)',
+                    borderWidth: 2,
+                    borderDash: [5, 5],
+                    pointRadius: 0,
+                    pointHoverRadius: 0
                 },
                 {
                     label: 'Buy Signal',
@@ -98,13 +108,16 @@ function createGraph(data) {
                     pointStyle: 'triangle',
                     pointBackgroundColor: 'green',
                     showLine: false,
+                    pointRadius: 8
                 },
                 {
                     label: 'Sell Signal',
                     data: sellSignals,
                     pointStyle: 'triangle',
                     pointBackgroundColor: 'red',
-                    showLine: false
+                    showLine: false,
+                    pointRadius: 8,
+                    rotation: 180
                 }
             ]
         },
