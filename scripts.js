@@ -81,21 +81,24 @@ function createGraph(data) {
                     label: `${data.ticker} Price`,
                     data: prices,
                     borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 2
+                    borderWidth: 2,
+                    pointRadius: 0
                 },
                 {
                     label: '5-Period Moving Average',
                     data: ma5,
                     borderColor: 'rgba(192, 75, 75, 1)',
                     borderWidth: 2,
-                    borderDash: [5, 5]
+                    borderDash: [5, 5],
+                    pointRadius: 0
                 },
                 {
                     label: '30-Period Moving Average',
                     data: ma30,
                     borderColor: 'rgba(75, 75, 192, 1)',
                     borderWidth: 2,
-                    borderDash: [5, 5]
+                    borderDash: [5, 5],
+                    pointRadius: 0
                 },
                 {
                     label: 'Buy Signal',
@@ -103,7 +106,7 @@ function createGraph(data) {
                     pointStyle: 'triangle',
                     pointBackgroundColor: 'green',
                     showLine: false,
-                    pointRadius: 6
+                    pointRadius: 8
                 },
                 {
                     label: 'Sell Signal',
@@ -111,7 +114,7 @@ function createGraph(data) {
                     pointStyle: 'triangle',
                     pointBackgroundColor: 'red',
                     showLine: false,
-                    pointRadius: 6,
+                    pointRadius: 8,
                     rotation: 180
                 }
             ]
@@ -124,7 +127,7 @@ function createGraph(data) {
                     title: { display: true, text: 'Date/Time' },
                     ticks: {
                         maxTicksLimit: 10,
-                        maxRotation: 0,
+                        maxRotation: 30,
                         autoSkip: true
                     }
                 },
