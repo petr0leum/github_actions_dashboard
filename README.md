@@ -53,7 +53,7 @@ The workflow file is located at `.github/workflows/stock_analysis.yml`. It is tr
 
 ## 📈 Example Output
 
-![Sample Stock Analysis](data/sample_output.png)
+![data/sample_output.png](https://github.com/petr0leum/github_actions_dashboard/blob/main/data/github_actions_web.png)
 
 ## 🌟 Future Improvements
 
