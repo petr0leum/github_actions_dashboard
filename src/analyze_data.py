@@ -5,7 +5,8 @@ import pandas as pd
 
 def analyze_stock_data(ticker):
     file_name = f'data/{ticker}_data.csv'
-    data = pd.read_csv(file_name, index_col=0, parse_dates=True)
+    data = pd.read_csv(file_name, parse_dates=True)
+    data = data.reset_index(drop=True)
 
     if data.empty:
         print(f"No data available for {ticker}. Skipping analysis.")

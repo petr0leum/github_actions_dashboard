@@ -10,9 +10,10 @@ def fetch_stock_data(ticker):
         if data.empty:
             print(f"No data available for the last month for {ticker}.")
             return
-
+        else:
+            print(f"Fetched data for {ticker}")
+            
         data.to_csv(f'data/{ticker}_data.csv')
-        print(f"Fetched data for {ticker}")
 
     except Exception as e:
         print(f"Error fetching data for {ticker}: {e}")
