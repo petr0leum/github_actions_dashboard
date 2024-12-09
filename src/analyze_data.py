@@ -110,7 +110,7 @@ def analyze_stock_data(ticker):
     result = {
         "ticker": ticker,
         "latest_close": round(data['Close'].iloc[-1], 2),
-        "timestamps": data['Datetime'].tolist(),
+        "timestamps": data['Datetime'].dt.strftime('%Y-%m-%d %H:%M:%S').tolist(),
         "prices": data['Close'].tolist(),
         "MA_5": data['MA_5'].tolist(),
         "MA_30": data['MA_30'].tolist(),
