@@ -3,10 +3,37 @@ import json
 import numpy as np
 import pandas as pd
 
+
+def count_profitable_trades(arr):
+    i, j = 0, 1
+    profitable_trades = 0
+    budjet = 10_000 # dollars
+    arr = arr[:-1] if len(arr) % 2 != 0 else arr
+
+    while (i < len(arr)) and (j < len(arr)):
+        amount_shares = budjet // float(arr[i]['price'])
+        free_budjet = budjet % (float(arr[i]['price']) * amount_shares)
+        price_delta = float(arr[j]['price']) - float(arr[i]['price'])
+        if price_delta >= 0:
+            profitable_trades += 1
+        new_budjet = float(arr[j]['price']) * amount_shares + free_budjet
+
+        print('Sell', float(arr[j]['price']), 'Buy', float(arr[i]['price']), budjet, new_budjet)
+        
+        i += 2
+        j += 2
+        budjet = new_budjet
+
+    result = round(new_budjet - 10_000, 2)
+    cumulative_return = round(result * 100 / 10_000, 2)
+
+    return budjet, profitable_trades, result, cumulative_return
+
 def analyze_stock_data(ticker):
     file_name = f'data/{ticker}_data.csv'
-    data = pd.read_csv(file_name, parse_dates=True)
-    data = data.reset_index(drop=True)
+    data = pd.read_csv(file_name, parse_dates=False)
+    data['Datetime'] = pd.to_datetime(data['Datetime'])
+    data['Datetime'] = data['Datetime'].dt.tz_localize(None)
 
     if data.empty:
         print(f"No data available for {ticker}. Skipping analysis.")
@@ -34,75 +61,69 @@ def analyze_stock_data(ticker):
     holding_start = None
 
     for i in range(1, len(data)):
-        if data['MA_5'].iloc[i] > data['MA_30'].iloc[i] and position == 0:
-            data.at[data.index[i], 'Signal'] = 1
+        if (data['MA_5'].iloc[i] >= data['MA_30'].iloc[i]) and position == 0:
             position = 1
-            holding_start = data.index[i]
-        elif data['MA_5'].iloc[i] < data['MA_30'].iloc[i] and position == 1:
-            data.at[data.index[i], 'Signal'] = -1
+            data.at[data.index[i], 'Signal'] = position
+            holding_start = data.at[data.index[i], 'Datetime']
+        elif (data['MA_5'].iloc[i] < data['MA_30'].iloc[i]) and position == 1:
             position = 0
+            data.at[data.index[i], 'Signal'] = -1
             if holding_start is not None:
                 data.at[data.index[i], 'Hold'] = holding_start.strftime('%Y-%m-%d %H:%M:%S')
                 holding_start = None
-        else:
-            data.at[data.index[i], 'Signal'] = 0
+        elif (data['MA_5'].iloc[i] >= data['MA_30'].iloc[i]) and position == 1:
+            data.at[data.index[i], 'Signal'] = 2
+        elif (data['MA_5'].iloc[i] < data['MA_30'].iloc[i]) and position == 0:
+            pass
 
     # Track performance
-    data['Position'] = data['Signal'].shift()
-    data['Returns'] = data['Close'].pct_change()
-    data['Strategy'] = data['Returns'] * data['Position']
-
-    # Calculate cumulative returns
-    data['Cumulative Returns'] = (1 + data['Strategy']).cumprod()
-
-    # Track deals (buy/sell actions)
+    total_trades = 0
     deals = []
     hold_periods = []
+
     for i in range(1, len(data)):
         if data['Signal'].iloc[i] == 1:
             deals.append({
-                "date": data.index[i].strftime('%Y-%m-%d %H:%M:%S'),
+                "date": data['Datetime'].iloc[i],
                 "action": "Buy",
-                "price": data['Close'].iloc[i]
+                "price": data['Open'].iloc[i]
             })
         elif data['Signal'].iloc[i] == -1:
             deals.append({
-                "date": data.index[i].strftime('%Y-%m-%d %H:%M:%S'),
+                "date": data['Datetime'].iloc[i],
                 "action": "Sell",
                 "price": data['Close'].iloc[i]
             })
+            total_trades += 1
             if 'Hold' in data.columns and pd.notna(data['Hold'].iloc[i]):
                 hold_periods.append({
                     "start": data['Hold'].iloc[i],
-                    "end": data.index[i].strftime('%Y-%m-%d %H:%M:%S')
+                    "end": data['Datetime'].iloc[i],
                 })
 
-
     # Calculate deal statistics
-    total_trades = len(deals)
-    profitable_trades = sum(1 for deal in deals if deal['action'] == 'Sell' and deal['price'] > 0)
-    win_rate = profitable_trades / total_trades if total_trades > 0 else 0
-    cumulative_return = data['Cumulative Returns'].iloc[-1] if not data['Cumulative Returns'].empty else 1
-
+    profit, profitable_trades, outcome, cumulative_return = count_profitable_trades(deals)
+    win_rate = round(profitable_trades / total_trades, 2)
     data = data.replace({np.nan: None})
 
     # Save analysis results to JSON
     result = {
         "ticker": ticker,
-        "latest_close": data['Close'].iloc[-1],
-        "timestamps": data.index.strftime('%Y-%m-%d %H:%M:%S').tolist(),
+        "latest_close": round(data['Close'].iloc[-1], 2),
+        "timestamps": data['Datetime'].strftime('%Y-%m-%d %H:%M:%S').tolist(),
         "prices": data['Close'].tolist(),
         "MA_5": data['MA_5'].tolist(),
         "MA_30": data['MA_30'].tolist(),
         "MA_60": data['MA_60'].tolist(),
         "RSI": data['RSI'].tolist(),
         "Signals": data['Signal'].tolist(),
-        "CumulativeReturns": data['Cumulative Returns'].tolist(),
+        "Profit": profit,
         "Deals": deals,
         "HoldPeriods": hold_periods,
         "TotalTrades": total_trades,
         "WinRate": win_rate,
-        "CumulativeReturn": cumulative_return
+        "CumulativeReturn": cumulative_return,
+        "Outcome": outcome
     }
 
     with open(f'data/{ticker}_data.json', 'w') as f:

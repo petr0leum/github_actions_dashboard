@@ -28,10 +28,9 @@ function displayStockData(data) {
     // Display the stock data
     stockDataDiv.innerHTML = `
         <h2>${data.ticker} Stock Data</h2>
-        <p>Latest Close Price: ${data.latest_close}</p>
         <p>Total Trades: ${data.TotalTrades}</p>
         <p>Win Rate: ${(data.WinRate * 100).toFixed(2)}%</p>
-        <p>Cumulative Return: ${(data.CumulativeReturn * 100).toFixed(2)}%</p>
+        <p>Cumulative Return: ${(data.CumulativeReturn).toFixed(2)}%</p>
         <canvas id="stock-chart" width="600" height="400"></canvas>
     `;
 
