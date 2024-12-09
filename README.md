@@ -6,20 +6,18 @@ An interactive web dashboard that automates daily stock data fetching, analysis,
 
 This project uses GitHub Actions to automatically fetch stock data daily, perform basic analysis (like moving averages and trend detection), and generate visualizations. The results are displayed on a dynamic web page hosted with GitHub Pages, allowing users to interact with the data and explore different stocks.
 
+### Accessing the Dashboard
+
+The dashboard is automatically deployed using GitHub Pages. You can access it at:
+
+[https://petr0leum.github.io/github_actions_dashboard/](https://petr0leum.github.io/github_actions_dashboard/)
+
 ### Key Features
 
 - **Automated Data Fetching**: Retrieves daily stock data using APIs (e.g., Yahoo Finance) without manual intervention.
 - **Data Analysis**: Computes basic stock analytics, such as moving averages and trend indicators.
 - **Interactive Web Dashboard**: Displays the latest stock data and visualizations, allowing users to select different stocks and view historical data.
 - **Continuous Integration/Continuous Deployment (CI/CD)**: Uses GitHub Actions to automate the entire workflow, from fetching data to publishing the web page.
-
-## 📊 Usage
-
-### Accessing the Dashboard
-
-The dashboard is automatically deployed using GitHub Pages. You can access it at:
-
-[https://petr0leum.github.io/github_actions_dashboard/](https://petr0leum.github.io/github_actions_dashboard/)
 
 ### Interacting with the Dashboard
 
