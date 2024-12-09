@@ -17,9 +17,6 @@ def count_profitable_trades(arr):
         if price_delta >= 0:
             profitable_trades += 1
         new_budjet = float(arr[j]['price']) * amount_shares + free_budjet
-
-        print('Sell', float(arr[j]['price']), 'Buy', float(arr[i]['price']), budjet, new_budjet)
-        
         i += 2
         j += 2
         budjet = new_budjet
@@ -84,13 +81,13 @@ def analyze_stock_data(ticker):
     for i in range(1, len(data)):
         if data['Signal'].iloc[i] == 1:
             deals.append({
-                "date": data['Datetime'].iloc[i],
+                "date": data['Datetime'].iloc[i].strftime('%Y-%m-%d %H:%M:%S'),
                 "action": "Buy",
                 "price": data['Open'].iloc[i]
             })
         elif data['Signal'].iloc[i] == -1:
             deals.append({
-                "date": data['Datetime'].iloc[i],
+                "date": data['Datetime'].iloc[i].strftime('%Y-%m-%d %H:%M:%S'),
                 "action": "Sell",
                 "price": data['Close'].iloc[i]
             })
@@ -98,7 +95,7 @@ def analyze_stock_data(ticker):
             if 'Hold' in data.columns and pd.notna(data['Hold'].iloc[i]):
                 hold_periods.append({
                     "start": data['Hold'].iloc[i],
-                    "end": data['Datetime'].iloc[i],
+                    "end": data['Datetime'].iloc[i].strftime('%Y-%m-%d %H:%M:%S')
                 })
 
     # Calculate deal statistics
