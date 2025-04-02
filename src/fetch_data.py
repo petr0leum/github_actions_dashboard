@@ -15,7 +15,7 @@ def fetch_stock_data(ticker):
         else:
             print(f"Fetched data for {ticker}")
             
-        data.to_csv(f'data/{ticker}_data.csv')
+        data.to_csv(f'../data/{ticker}_data.csv')
 
     except Exception as e:
         print(f"Error fetching data for {ticker}: {e}")

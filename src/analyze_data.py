@@ -27,10 +27,10 @@ def count_profitable_trades(arr):
     return budjet, profitable_trades, result, cumulative_return
 
 def analyze_stock_data(ticker):
-    file_name = f'data/{ticker}_data.csv'
+    file_name = f'../data/{ticker}_data.csv'
     data = pd.read_csv(file_name, parse_dates=False)
-    data['Datetime'] = pd.to_datetime(data['Datetime'])
-    data['Datetime'] = data['Datetime'].dt.tz_localize(None)
+    data['Datetime'] = pd.to_datetime(data['Datetime'], utc=True)
+    # data['Datetime'] = data['Datetime'].dt.tz_localize(None)
 
     if data.empty:
         print(f"No data available for {ticker}. Skipping analysis.")
@@ -123,7 +123,7 @@ def analyze_stock_data(ticker):
         "Outcome": outcome
     }
 
-    with open(f'data/{ticker}_data.json', 'w') as f:
+    with open(f'../data/{ticker}_data.json', 'w') as f:
         json.dump(result, f)
 
     if(os.path.exists(file_name) and os.path.isfile(file_name)): 
