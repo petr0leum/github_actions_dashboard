@@ -30,7 +30,7 @@ def analyze_stock_data(ticker):
     file_name = f'../data/{ticker}_data.csv'
     data = pd.read_csv(file_name, parse_dates=False)
     data['Datetime'] = pd.to_datetime(data['Datetime'], utc=True)
-    # data['Datetime'] = data['Datetime'].dt.tz_localize(None)
+    # data['Datetime'] = data['Datetime'].dt.tz_convert(None)
 
     if data.empty:
         print(f"No data available for {ticker}. Skipping analysis.")
