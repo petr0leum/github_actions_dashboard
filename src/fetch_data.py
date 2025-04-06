@@ -14,8 +14,9 @@ def fetch_stock_data(ticker):
             return
         else:
             print(f"Fetched data for {ticker}")
-            
-        data.to_csv(f'../data/{ticker}_data.csv')
+        
+        file_name = os.path.join(os.path.dirname(__file__), '..', 'data', f'{ticker}_data.csv')
+        data.to_csv(file_name, index=False)
 
     except Exception as e:
         print(f"Error fetching data for {ticker}: {e}")
